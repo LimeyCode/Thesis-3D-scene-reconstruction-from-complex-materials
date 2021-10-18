@@ -17,7 +17,7 @@ normalMatrix = numpy.zeros(shape=(716, 793, 3))
 while i < 716:
     i += 1
     j = 0
-    print(i)
+    #print(i)
     while j < 793:
         tmpNorm = wMatrix[i-1, :, j]
         u, s, vh = np.linalg.svd(tmpNorm, full_matrices=True)
@@ -27,17 +27,5 @@ while i < 716:
 
 outfile = os.path.join("NormalMatrix")
 np.save(outfile, normalMatrix)
-
-"""""
-uMatrix = numpy.zeros(shape=(967, 793))
-vMatrix = numpy.zeros(shape=(967, 793))
-zMatrix = numpy.zeros(shape=(967, 793))
-o = 0
-p = 0
-"""
-
-
-
-
 
 print("end")
