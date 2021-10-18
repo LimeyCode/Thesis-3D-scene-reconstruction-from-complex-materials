@@ -32,14 +32,6 @@ while o < 716:
         normalMatrix[o - 1][p][0] = ((((normalMatrix[o - 1][p][0])) + 1) / 2)
         normalMatrix[o - 1][p][1] = ((((normalMatrix[o - 1][p][1])) + 1) / 2)
         normalMatrix[o - 1][p][2] = ((((normalMatrix[o - 1][p][2])) + 1) / 2)
-
-        #normalMatrix[o - 1][p][0] = int((((normalMatrix[o - 1][p][0]) + 1)/2) * 255)
-        #normalMatrix[o - 1][p][1] = int((((normalMatrix[o - 1][p][1]) + 1) / 2) * 255)
-        #normalMatrix[o - 1][p][2] = int((((normalMatrix[o - 1][p][2]) + 1) / 2) * 255)
-
-        #normalMatrix[o - 1][p][0] = -((((normalMatrix[o - 1][p][0]) + 1)/2) * 255)
-        #normalMatrix[o - 1][p][1] = -((((normalMatrix[o - 1][p][1]) + 1) / 2) * 255)
-        #normalMatrix[o - 1][p][2] = -((((normalMatrix[o - 1][p][2]) + 1) / 2) * 255)
         p += 1
 
 
@@ -49,11 +41,4 @@ matplotlib.pyplot.imshow(normalMatrix)
 plt.imshow(normalMatrix)
 plt.show()
 plt.imsave('NormalImage.png', normalMatrix)
-pixels = normalMatrix.reshape(-1)
 
-
-xs = range(normalMatrix.shape[0])
-ys = range(normalMatrix.shape[1])
-indices = np.array(list(product(xs, ys)))
-x = indices[:, 0]
-y = indices[:, 1]
