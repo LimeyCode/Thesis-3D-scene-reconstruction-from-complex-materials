@@ -1,4 +1,3 @@
-# This is a sample Python script.
 import configparser
 import numpy
 import numpy as np
@@ -11,15 +10,13 @@ from open3d import *
 
 from tempfile import TemporaryFile
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-# Press the green button in the gutter to run the script.
+# Show keys of hdf5 files
 def print_attrs(name, obj):
     print(name)
     for key, val in obj.attrs.items():
         print("    %s: %s" % (key, val))
 
+# Find xyz coords from 2D images
 def pointcloud(depth, fov):
     fy = 0.5 / np.tan(fov * 0.5)  # assume aspectRatio is one.
     fx = fy/1.219419924
@@ -39,11 +36,10 @@ def pointcloud(depth, fov):
     world_z = -depth[y, x]
     ones = np.ones(world_z.shape[0], dtype=np.float32)
 
-    #return  np.array(world_x,world_y,world_z)
-    #return [world_x,world_y,world_z]
-    return np.vstack((world_x, world_y, world_z)).T
-    #return np.vstack((world_x, world_y, world_z, ones)).T
 
+    return np.vstack((world_x, world_y, world_z)).T
+    
+# Another method to find xyz points from 2D images
 def convert_from_uvd(self, u, v, d):
     d *= self.pxToMetre
     x_over_z = (self.cx - u) / self.focalx
@@ -53,6 +49,7 @@ def convert_from_uvd(self, u, v, d):
     y = y_over_z * z
     return x, y, z
 
+# Norm equation calculation
 def normalize(v):
     norm = np.linalg.norm(v)
     if norm == 0:
@@ -83,14 +80,14 @@ CameraPositionsFile.close()
 
 # Look at EPI images
 EPIdisparityFile = h5py.File('disparity_map.hdf5', 'r')
-#EPItwoDisparityFile = h5py.File('disparity_mapTwo.hdf5', 'r')
+
 # Print Attributes of file
 EPIdisparityFile.visititems(print_attrs)
 EPIdisparityFileKeys = list(EPIdisparityFile.keys())
-#EPItwoDisparityFileKeys = list(EPIdisparityFile.keys())
+
 # Get the whole volume of disparity
 EPIvolume = np.array(EPIdisparityFile.get('disparity_map'))
-#EPIvolumeTwo = np.array(EPItwoDisparityFile.get('disparity_map'))
+
 # Print volume shape
 print("shape of array : ", EPIvolume.shape)
 
@@ -100,6 +97,7 @@ firstPixel = firstImage[0][0]
 
 # Convert disparity to depth
 DisparityToDepth = ((3.048 * 1101.389) / firstImage)
+
 # Find the xyz of points from the EPI disparity map
 testOne = pointcloud(DisparityToDepth, 39.6)
 
@@ -109,8 +107,6 @@ pcd.points = o3d.utility.Vector3dVector(testOne)
 o3d.io.write_point_cloud("./data.ply", pcd)
 o3d.visualization.draw_geometries([pcd])
 
-
-# Get Helmholtz images
 
 # Get up camera images
 upHSimagesFile = h5py.File('upHS.hdf5', 'r')
@@ -124,7 +120,7 @@ downImagePixels = np.array(downHSimagesFile.get('lightfield'))
 
 # Loop through images and get corresponding pixel values
 """
-Variables needed
+Variables needed to calculate Helmholtz equation
 Ol : position of camera left image
 Or : position of camera right image
 Vl : vector left image
@@ -147,17 +143,14 @@ loopCounter = 0
 matrixW = numpy.zeros(shape= (716, 101, 793, 3))
 while i < 100:
     EPIimage = EPIvolume[i, :, :]
-   # EPIimageTwo = EPIvolumeTwo[i, :, :]
+   
 
     UpTmpImage = upImagePixels[i, :, :]
     DownTmpImage = downImagePixels[i, :, :]
 
     DisparityToDepth = ((3.048 * 50) / EPIimage)
-   # DisparityToDepth = ((3.048 * 50) / EPIimageTwo)
-
     EPIcords = pointcloud(EPIimage, 36)
-  #  EPIcordsTwo = pointcloud(EPIimageTwo, 36)
-
+ 
     Ol = arrayCameraPositions[i]
     Or = arrayCameraPositions[101 + i]
 
@@ -174,8 +167,7 @@ while i < 100:
             ir = DownTmpImage[j-1][k]
             # Convert EPI disparity image into cords
             P = EPIcords[loopCounter]
-            #Ptwo = EPIcordsTwo[loopCounter]
-
+            
             OlMinusP = Ol - P
             OrMinusP = Or - P
 
@@ -184,7 +176,7 @@ while i < 100:
 
             Vl = OlMinusP/NormOlMinusP
             Vr = OrMinusP/NormOrMinusP
-            #print(loopCounter)
+            
             loopCounter += 1
             OrNormSquared = NormOrMinusP**2
             OlNormSquared = NormOlMinusP**2
@@ -198,32 +190,6 @@ while i < 100:
 outfile = os.path.join("W_Matrix")
 np.save(outfile, matrixW)
 print('end')
-
-
-# Find the xyz of a point at a certain pixel
-
-# get camera position
-
-# Find this point for light up setup
-# Find this point for light down setup
-
-# Look at light up setup
-# Find position of camera Ol
-# Find intensity of the point
-# Calculate Vl
-
-# Look at light down setup
-# Find position of camera Or
-# Find intensity of the point
-# Calculate Vr
-
-# Calculate vector
-# Add to matrix W
-# Repeat for all pixels on object
-# Go to next image repeat
-# calculate norm for each pair
-# Average all normals
-# reconstruct object
 
 
 
