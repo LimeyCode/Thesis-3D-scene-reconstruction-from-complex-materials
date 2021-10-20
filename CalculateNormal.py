@@ -13,6 +13,7 @@ k = 0
 B = wMatrix[50,:,0]
 u, s, vh = np.linalg.svd(B, full_matrices=True)
 
+#Initialise new matrix then use SVD to get normals
 normalMatrix = numpy.zeros(shape=(716, 793, 3))
 while i < 716:
     i += 1
@@ -25,6 +26,7 @@ while i < 716:
         normalMatrix[i-1][j] = vh_transpose[2]
         j += 1
 
+# Save normal output matrix
 outfile = os.path.join("NormalMatrix")
 np.save(outfile, normalMatrix)
 
