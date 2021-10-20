@@ -12,23 +12,20 @@ from numpy.linalg import matrix_rank
 from itertools import product
 import pandas as pd
 
+# Load normal matrix
 normalMatrix = np.load("NormalMatrix.npy")
 
-uMatrix = numpy.zeros(shape=(716, 793))
-vMatrix = numpy.zeros(shape=(716, 793))
-zMatrix = numpy.zeros(shape=(716, 793))
+
 o = 0
 p = 0
 
-
+# Find uvz vectors and show them
 while o < 716:
     o += 1
     p = 0
     print(o)
     while p < 793:
-        uMatrix[o - 1][p] = normalMatrix[o - 1][p][0]
-        vMatrix[o - 1][p] = normalMatrix[o - 1][p][1]
-        zMatrix[o - 1][p] = normalMatrix[o - 1][p][2]
+        
         normalMatrix[o - 1][p][0] = ((((normalMatrix[o - 1][p][0])) + 1) / 2)
         normalMatrix[o - 1][p][1] = ((((normalMatrix[o - 1][p][1])) + 1) / 2)
         normalMatrix[o - 1][p][2] = ((((normalMatrix[o - 1][p][2])) + 1) / 2)
